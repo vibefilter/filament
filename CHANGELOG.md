@@ -12,4 +12,4 @@ All notable changes to `vibefilter/filament` will be documented in this file.
 - Filters only the rows left by the other filters and the search.
 - Asks before scoring more unscored rows than the limit, with a "Run anyway" button.
 - Live progress bar in the table while rows are scored, and a summary of each run: matches, rows scored, requests, time, and, with OpenRouter, the cost.
-- Translatable interface, in English and Hungarian.
+- Translatable interface, in English, Hungarian and Spanish.

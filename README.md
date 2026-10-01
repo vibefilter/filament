@@ -191,7 +191,7 @@ Record IDs and other columns are never sent. Each row goes out under a random ta
 
 ## Translations
 
-Vibefilter ships in English and Hungarian. Missing your language? Copy `resources/lang/en/vibefilter.php` to `resources/lang/{your-locale}/vibefilter.php`, translate it, and open a pull request. A test checks that no key is missing.
+Vibefilter ships in English, Hungarian and Spanish. Missing your language? Copy `resources/lang/en/vibefilter.php` to `resources/lang/{your-locale}/vibefilter.php`, translate it, and open a pull request. A test checks that no key is missing.
 
 To change the wording in your own app, publish the language files:
 
