@@ -104,6 +104,33 @@ VibeFilter::make()
 
 The filter works together with the rest of the table. If the table is already narrowed down, say by another filter to last month's orders or by a search for "refund", only those rows are scored.
 
+### Showing the score
+
+Add `VibeScoreColumn` to see how sure the model is about each row:
+
+```php
+use Vibefilter\Filament\Tables\Columns\VibeScoreColumn;
+
+->columns([
+    // ...
+    VibeScoreColumn::make(),
+])
+```
+
+The column shows each row's probability for the active statement, from the run the filter already did: it asks the model nothing and needs no column in your database. It stays hidden until a statement has run. It isn't sortable, because the scores aren't in your table. If your Vibefilter has a name other than `vibe`, pass it with `->filter('name')`.
+
+### Applying the filter
+
+Press Enter in the statement field to run it. The filter panel closes, so the progress bar and the result are in view. The Apply button keeps Filament's own behaviour and leaves the panel open. To close it on Apply too, change the table's Apply action:
+
+```php
+use Filament\Actions\Action;
+
+$table->filtersApplyAction(
+    fn (Action $action) => $action->alpineClickHandler('close(); $wire.applyTableFilters()'),
+);
+```
+
 ### Choosing a threshold
 
 The threshold is the probability a row needs to pass. Higher means fewer rows, and fewer borderline ones. 0.8 is a good start: on the 1000 demo reviews, Jev's answers at 0.8 matched the reviews' own mood labels most often (see [Results](#results)). Lower it if you'd rather see a few extra rows than miss one.
@@ -191,7 +218,7 @@ Record IDs and other columns are never sent. Each row goes out under a random ta
 
 ## Translations
 
-Vibefilter ships in English, Hungarian and Spanish. Missing your language? Copy `resources/lang/en/vibefilter.php` to `resources/lang/{your-locale}/vibefilter.php`, translate it, and open a pull request. A test checks that no key is missing.
+Vibefilter ships in English, Hungarian and Spanish (thanks to [@juandsep](https://github.com/juandsep)). Missing your language? Copy `resources/lang/en/vibefilter.php` to `resources/lang/{your-locale}/vibefilter.php`, translate it, and open a pull request. A test checks that no key is missing.
 
 To change the wording in your own app, publish the language files:
 
