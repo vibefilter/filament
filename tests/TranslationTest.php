@@ -31,6 +31,10 @@ class TranslationTest extends TestCase
         app()->setLocale('hu');
 
         $this->assertSame("1\u{00A0}234,5", Numbers::format(1234.5, 1));
+
+        app()->setLocale('es');
+
+        $this->assertSame('1.234,5', Numbers::format(1234.5, 1));
     }
 
     public function test_money_keeps_two_significant_digits_below_a_cent(): void
@@ -70,5 +74,24 @@ class TranslationTest extends TestCase
         $this->assertStringContainsString('2 sor pontozása', $bar);
         $this->assertStringContainsString('0 / 1 kérés kész', $bar);
         $this->assertStringContainsString("Költség:\u{00A0}\$0,0031", $bar);
+    }
+
+    public function test_spanish_singular_and_plural(): void
+    {
+        app()->setLocale('es');
+        config(['vibefilter.max_unscored_rows' => 1]);
+        $this->app->instance(DecisionDriver::class, new FakeDriver);
+        Review::create(['body' => 'One.']);
+        Review::create(['body' => 'Two.']);
+
+        Livewire::test(ListReviews::class)
+            ->filterTable('vibe', ['statement' => 'The customer is angry.'])
+            ->assertNotified('2 filas necesitan una puntuación nueva');
+
+        $bar = view('vibefilter::progress', ['rows' => 1, 'done' => 0, 'total' => 1, 'retries' => 0, 'cost' => 0.0031])->render();
+
+        $this->assertStringContainsString('Puntuando 1 fila', $bar);
+        $this->assertStringContainsString('0 / 1 solicitud completada', $bar);
+        $this->assertStringContainsString("Costo:\u{00A0}\$0,0031", $bar);
     }
 }
