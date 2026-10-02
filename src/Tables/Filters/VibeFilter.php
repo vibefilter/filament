@@ -195,9 +195,6 @@ class VibeFilter extends BaseFilter
                 $statement,
                 force: hash_equals($this->confirmationToken($statement), (string) $runAnyway),
             );
-
-            // The table may have decided which columns show while the scores weren't there yet.
-            $this->getTable()->flushCachedVisibleColumns();
         }
 
         return $this->resolved[$statement];

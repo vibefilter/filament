@@ -14,6 +14,7 @@ use Vibefilter\Filament\Tables\Filters\VibeFilter;
  * The scores come from the run the filter already did, so the column asks
  * the model nothing and adds no database column. It shows only while a
  * statement is active, and isn't sortable: the scores aren't in your table.
+ * Rows without a score yet, while the filter waits for "Run anyway", show a dash.
  */
 class VibeScoreColumn extends TextColumn
 {
@@ -38,7 +39,12 @@ class VibeScoreColumn extends TextColumn
 
         $this->alignEnd();
 
-        $this->hidden(fn (): bool => $this->getScores() === null);
+        // Shows while a statement is active. Whether its scores exist yet can't decide it:
+        // the table settles its columns before the filter runs when a statement is applied
+        // during rendering. The cells are read later, row by row, once the scores are there.
+        $this->hidden(fn (): bool => blank($this->getVibeFilter()?->getState()['statement'] ?? null));
+
+        $this->placeholder('—');
     }
 
     /**
@@ -51,13 +57,18 @@ class VibeScoreColumn extends TextColumn
         return $this;
     }
 
+    protected function getVibeFilter(): ?VibeFilter
+    {
+        $filter = $this->getTable()->getFilter($this->evaluate($this->filterName));
+
+        return $filter instanceof VibeFilter ? $filter : null;
+    }
+
     /**
      * @return array<array-key, float>|null
      */
     protected function getScores(): ?array
     {
-        $filter = $this->getTable()->getFilter($this->evaluate($this->filterName));
-
-        return $filter instanceof VibeFilter ? $filter->getActiveScores() : null;
+        return $this->getVibeFilter()?->getActiveScores();
     }
 }

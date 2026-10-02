@@ -253,15 +253,27 @@ class VibeFilterTest extends TestCase
         $this->assertCount(1, $this->driver->calls);
     }
 
-    public function test_the_score_column_stays_hidden_while_the_filter_waits_for_run_anyway(): void
+    public function test_the_score_column_shows_a_dash_while_the_filter_waits_for_run_anyway(): void
     {
         config(['vibefilter.max_unscored_rows' => 1]);
-        $this->review('One.');
+        $one = $this->review('One.');
         $this->review('Two.');
 
         Livewire::test(ListReviews::class)
             ->filterTable('vibe', ['statement' => 'The customer is angry.'])
-            ->assertTableColumnHidden('vibe_score');
+            ->assertTableColumnStateNotSet('vibe_score', 0.05, $one)
+            ->assertSee('—');
+    }
+
+    public function test_the_score_column_shows_when_the_statement_runs_during_rendering(): void
+    {
+        $angry = $this->review('I am furious about this.');
+
+        // A statement already in the filter state on page load, like a saved or linked filter:
+        // the scores are worked out while the table renders, after it settled its columns.
+        Livewire::withQueryParams([])
+            ->test(ListReviews::class, ['tableFilters' => ['vibe' => ['statement' => 'The customer is angry.']]])
+            ->assertSee('0.95');
     }
 
     public function test_enter_in_the_statement_field_applies_the_filters_and_closes_the_panel(): void
