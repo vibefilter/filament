@@ -15,6 +15,10 @@ return [
         'indicator' => 'Vibe: :statement',
     ],
 
+    'column' => [
+        'label' => 'Pontszám',
+    ],
+
     'limit' => [
         'title' => ':count sor vár pontozásra',
         'body' => 'A többi szűrő és a keresés után :total sor maradt a táblában, és ebből :unscored sornak még nincs mentett pontszáma erre az állításra. A korlát :limit.',

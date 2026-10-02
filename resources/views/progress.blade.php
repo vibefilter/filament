@@ -20,7 +20,7 @@
     <span style="white-space: nowrap; font-variant-numeric: tabular-nums; opacity: 0.75;">
         {{ trans_choice('vibefilter::vibefilter.progress.requests', $total, ['done' => $done, 'total' => $total]) }}
         @if ($retries)
-            · {{ __('vibefilter::vibefilter.progress.retried', ['count' => $retries]) }}
+            · {{ trans_choice('vibefilter::vibefilter.progress.retried', $retries, ['count' => $retries]) }}
         @endif
         @if (isset($cost))
             · {{ __('vibefilter::vibefilter.report.cost', ['amount' => \Vibefilter\Filament\Support\Numbers::money($cost)]) }}

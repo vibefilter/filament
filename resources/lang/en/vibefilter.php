@@ -14,6 +14,10 @@ return [
         'indicator' => 'Vibe: :statement',
     ],
 
+    'column' => [
+        'label' => 'Score',
+    ],
+
     'limit' => [
         'title' => ':count row needs a fresh score|:count rows need a fresh score',
         'body' => 'The table has :total rows with the other filters and the search applied, and :unscored of them have no cached score for this statement yet. The limit is :limit.',

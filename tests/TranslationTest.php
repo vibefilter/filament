@@ -94,4 +94,14 @@ class TranslationTest extends TestCase
         $this->assertStringContainsString('0 / 1 solicitud completada', $bar);
         $this->assertStringContainsString("Costo:\u{00A0}\$0,0031", $bar);
     }
+
+    public function test_a_single_retry_is_singular(): void
+    {
+        app()->setLocale('es');
+
+        $bar = view('vibefilter::progress', ['rows' => 1, 'done' => 0, 'total' => 1, 'retries' => 1, 'cost' => null])->render();
+
+        $this->assertStringContainsString('1 reintentada', $bar);
+        $this->assertStringNotContainsString('1 reintentadas', $bar);
+    }
 }

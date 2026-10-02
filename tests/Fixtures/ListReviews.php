@@ -12,6 +12,7 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Livewire\Component;
+use Vibefilter\Filament\Tables\Columns\VibeScoreColumn;
 use Vibefilter\Filament\Tables\Filters\VibeFilter;
 
 /**
@@ -30,6 +31,7 @@ class ListReviews extends Component implements HasActions, HasSchemas, HasTable
             ->columns([
                 TextColumn::make('body')->searchable(),
                 TextColumn::make('source'),
+                VibeScoreColumn::make(),
             ])
             ->filters([
                 VibeFilter::make()->textColumns(['body']),

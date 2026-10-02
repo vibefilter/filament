@@ -237,4 +237,37 @@ class VibeFilterTest extends TestCase
         Livewire::test(ListReviews::class)
             ->assertSeeHtml('<div data-vibefilter-progress></div>');
     }
+
+    public function test_the_score_column_shows_each_rows_probability(): void
+    {
+        $angry = $this->review('I am furious about this.');
+
+        Livewire::test(ListReviews::class)
+            ->assertTableColumnHidden('vibe_score')
+            ->filterTable('vibe', ['statement' => 'The customer is angry.'])
+            ->assertTableColumnVisible('vibe_score')
+            ->assertTableColumnStateSet('vibe_score', 0.95, $angry)
+            ->assertSee('0.95');
+
+        // Shown from the run the filter did: the model was asked once.
+        $this->assertCount(1, $this->driver->calls);
+    }
+
+    public function test_the_score_column_stays_hidden_while_the_filter_waits_for_run_anyway(): void
+    {
+        config(['vibefilter.max_unscored_rows' => 1]);
+        $this->review('One.');
+        $this->review('Two.');
+
+        Livewire::test(ListReviews::class)
+            ->filterTable('vibe', ['statement' => 'The customer is angry.'])
+            ->assertTableColumnHidden('vibe_score');
+    }
+
+    public function test_enter_in_the_statement_field_applies_the_filters_and_closes_the_panel(): void
+    {
+        Livewire::test(ListReviews::class)
+            ->assertSeeHtml('x-on:keydown.enter.prevent=')
+            ->assertSeeHtml('close(); $wire.applyTableFilters()');
+    }
 }

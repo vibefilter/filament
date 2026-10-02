@@ -41,6 +41,9 @@ class VibeFilter extends BaseFilter
     /** @var array<string, array<array-key>|null> Passing keys per statement, so one request scores only once. */
     protected array $resolved = [];
 
+    /** @var array<string, array<array-key, float>> The probabilities behind them, for the score column. */
+    protected array $scores = [];
+
     /** True while this filter asks the table for its candidate rows, so it leaves itself out. */
     protected bool $collectingCandidates = false;
 
@@ -59,7 +62,13 @@ class VibeFilter extends BaseFilter
             TextInput::make('statement')
                 ->label(__('vibefilter::vibefilter.filter.statement'))
                 ->placeholder(__('vibefilter::vibefilter.filter.placeholder'))
-                ->maxLength(500),
+                ->maxLength(500)
+                // Enter applies the filters, like the Apply button, and closes the panel so the
+                // progress bar and the result are in view. Only with deferred filters: otherwise
+                // the table already follows what is typed, and there is nothing to apply.
+                ->extraInputAttributes(fn (): array => $this->getTable()->hasDeferredFilters()
+                    ? ['x-on:keydown.enter.prevent' => "if (typeof close === 'function') close(); \$wire.applyTableFilters()"]
+                    : []),
         ]);
 
         $this->query(fn (Builder $query, array $data) => $this->applyStatement(
@@ -127,6 +136,20 @@ class VibeFilter extends BaseFilter
     }
 
     /**
+     * The probabilities for the active statement, by record key, once the filter has run.
+     * Null while there is no statement, or it is waiting for "Run anyway". Only reads:
+     * the scores come from the run the table query already triggered.
+     *
+     * @return array<array-key, float>|null
+     */
+    public function getActiveScores(): ?array
+    {
+        $statement = trim((string) ($this->getState()['statement'] ?? ''));
+
+        return $statement === '' ? null : ($this->scores[$statement] ?? null);
+    }
+
+    /**
      * Scores the rows before the table renders, while the request is handling the
      * "Apply" or "Run anyway" click. Blade buffers output during rendering, so this
      * is the only point where the progress bar can be streamed to the browser.
@@ -172,6 +195,9 @@ class VibeFilter extends BaseFilter
                 $statement,
                 force: hash_equals($this->confirmationToken($statement), (string) $runAnyway),
             );
+
+            // The table may have decided which columns show while the scores weren't there yet.
+            $this->getTable()->flushCachedVisibleColumns();
         }
 
         return $this->resolved[$statement];
@@ -229,12 +255,15 @@ class VibeFilter extends BaseFilter
         } catch (DriverException $exception) {
             // Batches that came back before the failure are cached: filter on those.
             $scores = $scorer->cachedScores($statement, $texts);
+            $this->scores[$statement] = $scores;
             $this->reportFailure($exception, count($scores), count($texts));
 
             if ($scores === []) {
                 return null;
             }
         }
+
+        $this->scores[$statement] = $scores;
 
         $threshold = $this->getThreshold();
         $passing = array_keys(array_filter($scores, fn (float $probability) => $probability >= $threshold));
@@ -265,7 +294,7 @@ class VibeFilter extends BaseFilter
         ];
 
         if ($report->retries()) {
-            $details[] = __('vibefilter::vibefilter.report.retried', ['count' => $report->retries()]);
+            $details[] = trans_choice('vibefilter::vibefilter.report.retried', $report->retries(), ['count' => $report->retries()]);
         }
 
         if ($report->cached) {

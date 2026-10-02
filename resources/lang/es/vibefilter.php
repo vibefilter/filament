@@ -14,6 +14,10 @@ return [
         'indicator' => 'Vibe: :statement',
     ],
 
+    'column' => [
+        'label' => 'Puntuación',
+    ],
+
     'limit' => [
         'title' => ':count fila necesita una puntuación nueva|:count filas necesitan una puntuación nueva',
         'body' => 'La tabla tiene :total filas con los demás filtros y la búsqueda aplicados, y :unscored de ellas aún no tienen una puntuación guardada para esta afirmación. El límite es :limit.',
@@ -24,7 +28,7 @@ return [
     'progress' => [
         'scoring' => 'Puntuando :count fila|Puntuando :count filas',
         'requests' => ':done / :total solicitud completada|:done / :total solicitudes completadas',
-        'retried' => ':count reintentadas',
+        'retried' => ':count reintentada|:count reintentadas',
         'label' => 'Progreso de Vibefilter',
     ],
 
@@ -33,7 +37,7 @@ return [
         'scored' => ':count fila puntuada|:count filas puntuadas',
         'scored_in' => ':count fila puntuada en :requests|:count filas puntuadas en :requests',
         'requests' => ':count solicitud|:count solicitudes',
-        'retried' => ':count reintentadas porque la API no respondió',
+        'retried' => ':count reintentada porque la API no respondió|:count reintentadas porque la API no respondió',
         'cost' => "Costo:\u{00A0}\$:amount",
         'seconds' => "Tiempo:\u{00A0}:seconds\u{00A0}s",
         'cached' => ':count desde la caché',
