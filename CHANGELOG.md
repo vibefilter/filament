@@ -4,7 +4,7 @@ All notable changes to `vibefilter/filament` will be documented in this file.
 
 ## 0.2.0 - 2026-10-02
 
-- `VibeScoreColumn`: shows each row's probability for the active statement, from the run the filter already did.
+- Optional `VibeScoreColumn`: shows each row's probability for the active statement, from the run the filter already did.
 - Enter in the statement field applies the filter and closes the filter panel.
 - Spanish translation, thanks to [@juandsep](https://github.com/juandsep).
 - The product is spelled "Vibefilter" everywhere.

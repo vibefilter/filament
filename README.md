@@ -106,7 +106,7 @@ The filter works together with the rest of the table. If the table is already na
 
 ### Showing the score
 
-Add `VibeScoreColumn` to see how sure the model is about each row:
+The filter only decides which rows stay. To also see how sure the model is about each row, add the optional score column:
 
 ```php
 use Vibefilter\Filament\Tables\Columns\VibeScoreColumn;
@@ -117,7 +117,9 @@ use Vibefilter\Filament\Tables\Columns\VibeScoreColumn;
 ])
 ```
 
-The column shows each row's probability for the active statement, from the run the filter already did: it asks the model nothing and needs no column in your database. It stays hidden until a statement has run. It isn't sortable, because the scores aren't in your table. If your Vibefilter has a name other than `vibe`, pass it with `->filter('name')`.
+Nothing changes in your tables unless you add it. It's most useful while you set things up, for example to pick a threshold; in an app your users work in every day, a bare 0.93 may say little to them, so leave it out there if it doesn't help.
+
+The column shows while a statement is active, with each row's probability from the run the filter already did: it asks the model nothing and needs no column in your database. Rows waiting for "Run anyway" show a dash. It isn't sortable, because the scores aren't in your table. If your Vibefilter has a name other than `vibe`, pass it with `->filter('name')`.
 
 ### Applying the filter
 
