@@ -43,7 +43,7 @@ return [
         'title' => 'Vibefilter no pudo ejecutarse',
         'unfiltered' => 'La tabla no está filtrada.',
         'partial_title' => ':scored de :total filas puntuadas',
-        'partial_body' => 'La API no respondió para :count fila, así que la tabla solo muestra coincidencias entre las puntuadas. Reintentar envía solo la :count que falta.|La API no respondió para :count filas, así que la tabla solo muestra coincidencias entre las puntuadas. Reintentar envía solo las :count que faltan.',
+        'partial_body' => 'La API no respondió para :count fila, así que la tabla solo muestra coincidencias entre las puntuadas. Al reintentar se envía solo la fila que falta.|La API no respondió para :count filas, así que la tabla solo muestra coincidencias entre las puntuadas. Al reintentar se envían solo las :count que faltan.',
         'try_again' => 'Reintentar',
     ],
 
