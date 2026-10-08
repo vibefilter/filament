@@ -1,6 +1,6 @@
 {
     "name": "vibefilter/filament",
-    "description": "Filter your Filament tables by vibe: natural-language table filters powered by TypeSafe Jev.",
+    "description": "Filter Filament tables with a plain-English statement. Each row is scored by TypeSafe Jev.",
     "keywords": [
         "filament",
         "filamentphp",
@@ -12,6 +12,8 @@
         "natural-language",
         "filter",
         "jev",
+        "jev-ai",
+        "jev-api",
         "typesafe",
         "openrouter"
     ],
