@@ -45,6 +45,7 @@ class DecisionManager extends Manager
             batchSize: $this->config->get('vibefilter.batch_size', 100),
             concurrency: $this->config->get('vibefilter.concurrency', 10),
             retryDelays: $config['retry_delays'] ?? [500, 2000, 5000],
+            attribution: $config['attribution'] ?? [],
         );
     }
 

@@ -88,4 +88,43 @@ class OpenRouterDriverTest extends TestCase
 
         (new OpenRouterDriver('key', retryDelays: []))->decide('The customer is angry.', ['text']);
     }
+
+    public function test_requests_carry_vibefilters_app_attribution_by_default(): void
+    {
+        $this->fakeOpenRouter();
+        config(['vibefilter.driver' => 'openrouter', 'vibefilter.drivers.openrouter.api_key' => 'key']);
+
+        app(DecisionDriver::class)->decide('The customer is angry.', ['a']);
+
+        Http::assertSent(fn (Request $request) => $request->hasHeader('HTTP-Referer', 'https://vibefilter.dev')
+            && $request->hasHeader('X-OpenRouter-Title', 'Vibefilter')
+            && ! $request->hasHeader('X-OpenRouter-App-Visibility'));
+    }
+
+    public function test_the_attribution_can_be_changed_hidden_or_switched_off(): void
+    {
+        $this->fakeOpenRouter();
+
+        (new OpenRouterDriver('key', attribution: ['url' => 'https://example.com', 'title' => 'My app', 'visibility' => 'hidden']))
+            ->decide('The customer is angry.', ['a']);
+
+        Http::assertSent(fn (Request $request) => $request->hasHeader('HTTP-Referer', 'https://example.com')
+            && $request->hasHeader('X-OpenRouter-Title', 'My app')
+            && $request->hasHeader('X-OpenRouter-App-Visibility', 'hidden'));
+
+        $this->fakeOpenRouter();
+        (new OpenRouterDriver('key', attribution: ['url' => '', 'title' => null]))->decide('The customer is angry.', ['a']);
+
+        Http::assertSent(fn (Request $request) => ! $request->hasHeader('HTTP-Referer') && ! $request->hasHeader('X-OpenRouter-Title'));
+    }
+
+    public function test_typesafe_requests_carry_no_attribution(): void
+    {
+        Http::fake(['*' => Http::response(['answers' => ['q0' => ['type' => 'noul', 'noul' => 0.5]]])]);
+        config(['vibefilter.driver' => 'typesafe', 'vibefilter.drivers.typesafe.api_key' => 'key']);
+
+        rescue(fn () => app(DecisionDriver::class)->decide('The customer is angry.', ['a']), report: false);
+
+        Http::assertSent(fn (Request $request) => ! $request->hasHeader('HTTP-Referer') && ! $request->hasHeader('X-OpenRouter-Title'));
+    }
 }

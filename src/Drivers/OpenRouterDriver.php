@@ -14,6 +14,7 @@ class OpenRouterDriver extends TypeSafeDriver implements ReportsCost
 {
     /**
      * @param  array<int>  $retryDelays  Pauses in milliseconds before each retry.
+     * @param  array{url?: ?string, title?: ?string, visibility?: ?string}  $attribution  App attribution headers; empty values are left out.
      */
     public function __construct(
         ?string $apiKey,
@@ -23,6 +24,7 @@ class OpenRouterDriver extends TypeSafeDriver implements ReportsCost
         int $batchSize = 100,
         int $concurrency = 10,
         array $retryDelays = [500, 2000, 5000],
+        protected array $attribution = [],
     ) {
         parent::__construct($apiKey, $baseUrl, $model, $timeout, $batchSize, $concurrency, $retryDelays);
     }
@@ -48,6 +50,21 @@ class OpenRouterDriver extends TypeSafeDriver implements ReportsCost
         $cost = is_array($json) ? ($json['usage']['cost'] ?? null) : null;
 
         return is_numeric($cost) ? (float) $cost : 0.0;
+    }
+
+    /**
+     * OpenRouter's app attribution: the URL creates the app page, the title names it,
+     * and "hidden" keeps a new app out of the public rankings.
+     *
+     * @return array<string, string>
+     */
+    protected function extraHeaders(): array
+    {
+        return array_filter([
+            'HTTP-Referer' => (string) ($this->attribution['url'] ?? ''),
+            'X-OpenRouter-Title' => (string) ($this->attribution['title'] ?? ''),
+            'X-OpenRouter-App-Visibility' => (string) ($this->attribution['visibility'] ?? ''),
+        ], fn (string $value) => $value !== '');
     }
 
     protected function service(): string

@@ -2,6 +2,11 @@
 
 All notable changes to `vibefilter/filament` will be documented in this file.
 
+## 0.2.1 - 2026-10-10
+
+- The OpenRouter driver sends OpenRouter's app attribution headers (`HTTP-Referer`, `X-OpenRouter-Title`), so usage is credited to Vibefilter. They can be changed, set to hidden, or switched off in the config.
+- The package description matches the repository's.
+
 ## 0.2.0 - 2026-10-02
 
 - Optional `VibeScoreColumn`: shows each row's probability for the active statement, from the run the filter already did.

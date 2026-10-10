@@ -27,6 +27,15 @@ return [
             'model' => env('OPENROUTER_MODEL', 'typesafe/jev-1.13'),
             'timeout' => 60,
             'retry_delays' => [500, 2000, 5000],
+            // OpenRouter's app attribution headers. The URL is what creates an app page
+            // and puts the usage in OpenRouter's rankings; set it to your own app's URL,
+            // or empty to send no attribution. "hidden" keeps a newly created app out of
+            // the public rankings; it only counts on the very first request.
+            'attribution' => [
+                'url' => env('VIBEFILTER_OPENROUTER_APP_URL', 'https://vibefilter.dev'),
+                'title' => env('VIBEFILTER_OPENROUTER_APP_TITLE', 'Vibefilter'),
+                'visibility' => env('VIBEFILTER_OPENROUTER_APP_VISIBILITY'),
+            ],
         ],
     ],
 

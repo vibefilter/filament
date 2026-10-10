@@ -61,6 +61,16 @@ class TypeSafeDriver implements CountsRequests, DecisionDriver
         return $this->service() . ':' . $this->model;
     }
 
+    /**
+     * Headers sent with every request on top of the key.
+     *
+     * @return array<string, string>
+     */
+    protected function extraHeaders(): array
+    {
+        return [];
+    }
+
     protected function service(): string
     {
         return 'typesafe';
@@ -180,6 +190,7 @@ class TypeSafeDriver implements CountsRequests, DecisionDriver
             fn (int $index) => $pool->as((string) $index)
                 ->withToken($this->apiKey)
                 ->acceptJson()
+                ->withHeaders($this->extraHeaders())
                 ->timeout($this->timeout)
                 ->withMiddleware($countAttempt)
                 ->withMiddleware($reportProgress)

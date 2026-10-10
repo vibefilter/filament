@@ -184,6 +184,17 @@ The published `config/vibefilter.php`:
 
 Both run the same model with the same requests; OpenRouter forwards to TypeSafe. Use OpenRouter if you already have an account there. The models are pinned to a fixed version rather than an alias like `jev-latest`, because a silent model update would mix scores from two versions in the cache.
 
+### OpenRouter app attribution
+
+With the `openrouter` driver, every request carries OpenRouter's [app attribution](https://openrouter.ai/docs/app-attribution) headers: `HTTP-Referer: https://vibefilter.dev` and `X-OpenRouter-Title: Vibefilter`. That's how OpenRouter credits the usage to an app. Point them at your own app, hide a new app from OpenRouter's public rankings, or send none:
+
+```env
+VIBEFILTER_OPENROUTER_APP_URL=https://your-app.example
+VIBEFILTER_OPENROUTER_APP_TITLE="Your app"
+VIBEFILTER_OPENROUTER_APP_VISIBILITY=hidden   # only counts on the request that creates the app
+# VIBEFILTER_OPENROUTER_APP_URL=              # empty: no attribution headers
+```
+
 ## Caching
 
 Each score is stored against three things: a hash of the row's text, the statement, and the driver (service and model, e.g. `openrouter:typesafe/jev-1.13`). That means:
