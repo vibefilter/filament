@@ -5,6 +5,7 @@ namespace Vibefilter\Filament\Tests;
 use Closure;
 use Filament\Notifications\Livewire\Notifications;
 use Filament\Notifications\Notification;
+use Filament\Notifications\NotificationMailbox;
 use Livewire\Livewire;
 use Vibefilter\Filament\Contracts\DecisionDriver;
 use Vibefilter\Filament\Drivers\FakeDriver;
@@ -177,6 +178,11 @@ class VibeFilterTest extends TestCase
 
         $notifications = new Notifications;
         $notifications->mount();
+        // Filament 5.10.2+ keeps sent notifications in a mailbox and no longer reads them on mount.
+        if (class_exists(NotificationMailbox::class)) {
+            app(NotificationMailbox::class)->flush();
+        }
+        $notifications->pullNotificationsFromSession();
         $popUp = $notifications->notifications->first(fn (Notification $notification) => $notification->getTitle() === '2 rows need a fresh score');
         $click = $popUp->getActions()[0]->getAlpineClickHandler();
 
