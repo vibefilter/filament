@@ -306,6 +306,7 @@ Scoring by [TypeSafe Jev](https://typesafe.ai).
 
 - [Povilas Korop on X](https://x.com/PovilasKorop/status/2108278841126818222)
 - [awesome-jev](https://github.com/yibie/awesome-jev#classification--routing), Classification & Routing
+- [JevDirectory](https://www.jevdirectory.org/resources/vibefilter), Jev Integrations & Adapters
 - [Laravel News Links on X](https://x.com/LaravelLinks/status/2109244689463275606)
 - [Filament plugin directory](https://filamentphp.com/plugins/andras-horvath-vibefilter)
 
